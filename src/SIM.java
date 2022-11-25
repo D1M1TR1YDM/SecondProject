@@ -1,20 +1,20 @@
+import java.util.Objects;
 import java.util.Scanner;
 
 public class SIM {
-    private double balance;
-    private double costRing;
-    private double costSms;
-    private double costMobileInternet;
-    private double mobileInternet;
+    private int balance = 0;
+    private int costRing;
+    private int costSms;
+    private int costMobileInternet;
+    private int mobileInternet;
     private String yourOperator;
     private String otherOperator;
+    private int count;
 
     public SIM() {
     }
 
-    ;
-
-    public SIM(double costMobileInternet, double balance, double costRing, double costSms, double mobileInternet, String yourOperator, String otherOperator) {
+    public SIM(int costMobileInternet, int balance, int costRing, int costSms, int mobileInternet, String yourOperator, String otherOperator) {
         this.yourOperator = yourOperator;
         this.otherOperator = otherOperator;
         this.balance = balance;
@@ -24,15 +24,19 @@ public class SIM {
         this.mobileInternet = mobileInternet;
     }
 
-    public void setMobileInternet(double mobileInternet) {
+    public void setMobileInternet(int mobileInternet) {
         this.mobileInternet = mobileInternet;
+    }
+
+    public int getCount() {
+        return count;
     }
 
     public double getMobileInternet() {
         return mobileInternet;
     }
 
-    public void setBalance(double balance) {
+    public void setBalance(int balance) {
         this.balance = balance;
     }
 
@@ -40,7 +44,7 @@ public class SIM {
         return balance;
     }
 
-    public void setCostRing(double costRing) {
+    public void setCostRing(int costRing) {
         this.costRing = costRing;
     }
 
@@ -48,7 +52,7 @@ public class SIM {
         return costRing;
     }
 
-    public void setCostSms(double costSms) {
+    public void setCostSms(int costSms) {
         this.costSms = costSms;
     }
 
@@ -56,7 +60,7 @@ public class SIM {
         return costSms;
     }
 
-    public void setCostMobileInternet(double costMobileInternet) {
+    public void setCostMobileInternet(int costMobileInternet) {
         this.costMobileInternet = costMobileInternet;
     }
 
@@ -81,71 +85,88 @@ public class SIM {
 
     }
 
-    public void buyInternet() {
+    public void addBalance() {
         Scanner sc = new Scanner(System.in);
-        System.out.println("how");
+        System.out.println("HOW MANY BALANCE YOU WANT TO ADD?");
+        int balance = sc.nextInt();
+        this.balance = balance + this.balance;
+    }
+
+    public void buyInternet() {
+        if (balance == 0) System.out.println("YOUR BALANCE IS 0 ERROR");
+        else {
+            Scanner sc = new Scanner(System.in);
+            System.out.println("HOW MANY GB YOU WANT TO BUY?");
+            int buyGb = sc.nextInt();
+            if (balance - (costMobileInternet * buyGb) < 0)
+                System.out.println("NOT ENOUGH BALANCE");
+            else balance = balance - (costMobileInternet * buyGb);
+        }
     }
 
     public void toSms() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("WRITE STOP TO STOP MESSAGING");
+        if (balance == 0) System.out.println("YOUR BALANCE IS 0 ERROR");
+        else {
+            Scanner scanner = new Scanner(System.in);
+            System.out.println("WRITE STOP TO STOP MESSAGING");
 
-        for (int i = 0; balance >= costSms; i++) {
-            String message = scanner.nextLine();
-            if (message == "STOP") {
-                System.out.println(balance);
-                break;
-            } else {
-                System.out.println(message);
-                balance = balance - costSms;
-                System.out.println(balance);
-            }
-            if (balance < costSms) {
-                System.out.println("NOT ENOUGH BALANCE");
-                break;
-            }
+            for (int i = 0; balance >= costSms; i++) {
+                String message = scanner.nextLine();
+                if (Objects.equals(message, "STOP")) {
+                    break;
+                } else if (balance < costSms) {
+                    System.out.println("NOT ENOUGH BALANCE");
+                    break;
+                } else {
+                    System.out.println(message);
+                    balance = balance - costSms;
+                }
 
+
+            }
         }
 
 
     }
 
     public void toRing() {
-        Scanner sc = new Scanner(System.in);
-        System.out.println("WHAT TIME DO YOU TALK (MIN) ?");
-        int time = sc.nextInt();
-        if (balance < balance - (costRing * time)) System.out.println("BALANCE IS TOO LOW");
+        if (this.balance == 0) System.out.println("YOUR BALANCE IS 0 ERROR");
         else {
-            balance = balance - (costRing * time);
-            System.out.println("YOUR BALANCE - " + balance);
+            Scanner sc = new Scanner(System.in);
+            System.out.println("WHAT TIME DO YOU TALK (MIN) ?");
+            int time = sc.nextInt();
+            if (0 > this.balance - (costRing * time)) System.out.println("BALANCE IS TOO LOW");
+            else {
+                this.balance = this.balance - (costRing * time);
+            }
         }
     }
 
     public void beelineYourOperator() {
         this.yourOperator = "BEELINE";
-        this.costMobileInternet = 30.0;
-        System.out.println("COST TO BUY 1 GB INTERNET - " + costMobileInternet );
+        this.costMobileInternet = 30;
+        count = 1;
     }
 
     public void beelineOtherOperator(int otherOperator) {
         if (otherOperator == 0) {
             this.otherOperator = "MEGACOM";
-            this.costSms = 1.7;
-            this.costRing = 1.05;
+            this.costSms = 2;
+            this.costRing = 1;
             System.out.println("COST OF SMS - " + costSms + "\n" +
                     "COST TO RING - " + costRing);
         }
         if (otherOperator == 1) {
             this.otherOperator = "BEELINE";
-            this.costRing = 0.0;
-            this.costSms = 0.0;
+            this.costRing = 0;
+            this.costSms = 0;
             System.out.println("COST OF SMS - " + costSms + "\n" +
                     "COST TO RING - " + costRing);
         }
         if (otherOperator == 2) {
             this.otherOperator = "0!";
-            this.costSms = 2.0;
-            this.costRing = 0.95;
+            this.costSms = 2;
+            this.costRing = 1;
             System.out.println("COST OF SMS - " + costSms + "\n" +
                     "COST TO RING - " + costRing);
         }
@@ -153,31 +174,31 @@ public class SIM {
 
 
     public void oYourOperator() {
-        this.costMobileInternet = 30.0;
+        this.costMobileInternet = 30;
         this.yourOperator = "O!";
-        System.out.println("COST TO BUY 1 GB INTERNET - " + costMobileInternet );
+        count = 2;
 
     }
 
     public void oOtherOperator(int otherOperator) {
         if (otherOperator == 0) {
             this.otherOperator = "MEGACOM";
-            this.costSms = 1.7;
-            this.costRing = 1.05;
+            this.costSms = 2;
+            this.costRing = 1;
             System.out.println("COST OF SMS - " + costSms + "\n" +
                     "COST TO RING - " + costRing);
         }
         if (otherOperator == 1) {
             this.otherOperator = "BEELINE";
-            this.costRing = 1.0;
-            this.costSms = 1.2;
+            this.costRing = 1;
+            this.costSms = 1;
             System.out.println("COST OF SMS - " + costSms + "\n" +
                     "COST TO RING - " + costRing);
         }
         if (otherOperator == 2) {
             this.otherOperator = "0!";
-            this.costSms = 0.0;
-            this.costRing = 0.0;
+            this.costSms = 0;
+            this.costRing = 0;
             System.out.println("COST OF SMS - " + costSms + "\n" +
                     "COST TO RING - " + costRing);
         }
@@ -185,9 +206,9 @@ public class SIM {
     }
 
     public void megacomYourOperator() {
-        this.costMobileInternet = 40.0;
+        this.costMobileInternet = 40;
         yourOperator = "MEGACOM";
-        System.out.println("COST TO BUY 1 GB INTERNET - " + costMobileInternet );
+        count = 1;
 
     }
 
@@ -202,15 +223,15 @@ public class SIM {
         }
         if (otherOperator == 1) {
             this.otherOperator = "BEELINE";
-            this.costRing = 1.0;
-            this.costSms = 1.2;
+            this.costRing = 1;
+            this.costSms = 1;
             System.out.println("COST OF SMS - " + costSms + "\n" +
                     "COST TO RING - " + costRing);
         }
         if (otherOperator == 2) {
             this.otherOperator = "0!";
-            this.costSms = 2.0;
-            this.costRing = 0.95;
+            this.costSms = 2;
+            this.costRing = 1;
             System.out.println("COST OF SMS - " + costSms + "\n" +
                     "COST TO RING - " + costRing);
         }
